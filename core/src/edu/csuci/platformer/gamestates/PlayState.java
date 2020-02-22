@@ -57,7 +57,7 @@ public class PlayState extends AbstractGameState {
     }
 
     private void initPhys() {
-        world = new World(new Vector2(0, -9.8f), true);
+        world = new World(new Vector2(0, GameData.GRAVITY), true);
         accumulator = 0;
         b2dView = new FitViewport(GameData.WORLD_WIDTH * GameData.METERS_PER_PIXEL,
                 GameData.WORLD_HEIGHT * GameData.METERS_PER_PIXEL);
