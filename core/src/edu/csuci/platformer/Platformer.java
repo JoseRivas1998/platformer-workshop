@@ -6,14 +6,17 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import edu.csuci.platformer.gamestates.GameStateType;
+import edu.csuci.platformer.managers.ContentManager;
 import edu.csuci.platformer.managers.GameStateManager;
 
 public class Platformer extends ApplicationAdapter {
 
 	private GameStateManager gameStateManager;
+	public static ContentManager content;
 	
 	@Override
 	public void create () {
+		content = new ContentManager();
 		gameStateManager = new GameStateManager(GameStateType.PLAY);
 	}
 
@@ -33,5 +36,6 @@ public class Platformer extends ApplicationAdapter {
 	@Override
 	public void dispose () {
 		gameStateManager.dispose();
+		content.dispose();
 	}
 }

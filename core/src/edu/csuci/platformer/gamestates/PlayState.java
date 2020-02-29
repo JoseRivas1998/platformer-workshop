@@ -1,5 +1,7 @@
 package edu.csuci.platformer.gamestates;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
@@ -7,6 +9,8 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import edu.csuci.platformer.GameData;
+import edu.csuci.platformer.entities.Level;
+import edu.csuci.platformer.entities.Player;
 import edu.csuci.platformer.managers.GameStateManager;
 
 public class PlayState extends AbstractGameState {
@@ -16,6 +20,11 @@ public class PlayState extends AbstractGameState {
     private Viewport b2dView;
     private Box2DDebugRenderer b2dRenderer;
 
+    private Level map;
+    private Viewport gameView;
+
+    private Player player;
+
     public PlayState(GameStateManager gsm) {
         super(gsm);
     }
@@ -24,35 +33,17 @@ public class PlayState extends AbstractGameState {
     protected void init() {
         initPhys();
 
-        BodyDef groundBodyDef = new BodyDef();
-        groundBodyDef.fixedRotation = true;
-        groundBodyDef.type = BodyDef.BodyType.StaticBody;
-        groundBodyDef.position.set(10, 2);
-        Body body = world.createBody(groundBodyDef);
+        map = new Level(0, world);
 
-        PolygonShape shape = new PolygonShape();
-        shape.setAsBox(5f, 0.5f);
+        gameView = new FitViewport(GameData.WORLD_WIDTH, GameData.WORLD_HEIGHT);
+        gameView.getCamera().position.set(
+                GameData.WORLD_WIDTH * 0.5f,
+                GameData.WORLD_HEIGHT * 0.5f,
+                0
+        );
+        gameView.getCamera().update();
 
-        FixtureDef groundFixtureDef = new FixtureDef();
-        groundFixtureDef.isSensor = false;
-        groundFixtureDef.shape = shape;
-        body.createFixture(groundFixtureDef);
-        shape.dispose();
-
-        BodyDef boxBodyDef = new BodyDef();
-        boxBodyDef.type = BodyDef.BodyType.DynamicBody;
-        boxBodyDef.fixedRotation = true;
-        boxBodyDef.position.set(10, 10);
-        Body box = world.createBody(boxBodyDef);
-
-        shape = new PolygonShape();
-        shape.setAsBox(0.5f, 0.5f);
-
-        FixtureDef boxFixtureDef = new FixtureDef();
-        boxFixtureDef.isSensor = false;
-        boxFixtureDef.shape = shape;
-        box.createFixture(boxFixtureDef);
-        shape.dispose();
+        player = new Player(world, map.getPlayerSpawnPosition());
 
     }
 
@@ -72,6 +63,20 @@ public class PlayState extends AbstractGameState {
     @Override
     public void update(float dt) {
         physicsStep(dt);
+        updateView();
+    }
+
+    private void updateView() {
+        gameView.getCamera().position.set(
+                new Vector2(player.getBody().getPosition()).scl(GameData.PIXELS_PER_METER),
+                0
+        );
+        gameView.apply();
+        b2dView.getCamera().position.set(
+                gameView.getCamera().position.x * GameData.METERS_PER_PIXEL,
+                gameView.getCamera().position.y * GameData.METERS_PER_PIXEL,
+                0
+        );
         b2dView.apply();
     }
 
@@ -85,7 +90,10 @@ public class PlayState extends AbstractGameState {
 
     @Override
     public void draw(float dt, SpriteBatch sb, ShapeRenderer sr) {
-        b2dRenderer.render(world, b2dView.getCamera().combined);
+        map.render(gameView);
+        if(GameData.DEBUG) {
+            b2dRenderer.render(world, b2dView.getCamera().combined);
+        }
     }
 
     @Override
