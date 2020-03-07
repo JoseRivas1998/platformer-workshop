@@ -23,6 +23,11 @@ public class GameData {
         public static final short PLAYER = 1 << 1;
     }
 
+    public enum B2DUserData {
+        PLAYER_BODY,
+        PLAYER_FOOT
+    }
+
     public static final float PLAYER_ANIM_DURATION = 0.15f; // s / frame
     public static final float PLAYER_FOOT_HEIGHT = 4f; // px
     public static final float PLAYER_SPEED = 5f; // m / s

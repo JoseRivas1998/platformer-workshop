@@ -61,7 +61,8 @@ public class ContentManager implements Disposable {
     public enum Image {
         PINK_ALIEN_WALK("img/pinkAlien_walk.png"),
         PINK_ALIEN_STAND("img/pinkAlien_stand.png"),
-        PINK_ALIEN_JUMP("img/pinkAlien_jump.png");
+        PINK_ALIEN_JUMP("img/pinkAlien_jump.png"),
+        LEVEL_BG("img/levelbg.png");
         public final String path;
 
         Image(String path) {
@@ -70,7 +71,10 @@ public class ContentManager implements Disposable {
     }
 
     public enum SoundEffect {
-        ;
+        COIN("snd/coin.mp3"),
+        JUMP("snd/jump.mp3"),
+        LASER("snd/laser.mp3"),
+        FLY_DEATH("snd/fly_death.mp3");
         public final String path;
 
         SoundEffect(String path) {
